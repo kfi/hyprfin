@@ -85,7 +85,8 @@ dnf5 install -y --setopt=install_weak_deps=False \
     yad \
     yubikey-manager \
     wlogout \
-    swww
+    swww \
+    firefox
 
 # Use a COPR Example:
 #
