@@ -92,7 +92,8 @@ dnf5 install -y --setopt=install_weak_deps=False \
     qt5-qtquickcontrols2 \
     qt5-qtsvg \
     kwallet \
-    pam-kwallet
+    pam-kwallet \
+    thunar
 
 # Use a COPR Example:
 #
@@ -112,6 +113,3 @@ dnf5 -y copr disable wezfurlong/wezterm-nightly
 systemctl enable podman.socket
 systemctl disable gdm
 systemctl enable sddm
-
-# Run SDDM theming script
-/ctx/scripts/setsddmtheming.sh
