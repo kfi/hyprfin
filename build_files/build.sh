@@ -78,7 +78,6 @@ dnf5 install -y --setopt=install_weak_deps=False \
     blueman \
     qt5-qtwayland \
     qt6-qtwayland \
-    sddm \
     mpv \
     mpv-mpris \
     wlogout \
@@ -86,7 +85,14 @@ dnf5 install -y --setopt=install_weak_deps=False \
     yubikey-manager \
     wlogout \
     swww \
-    firefox
+    firefox \
+    sddm \
+    sddm-themes \
+    qt5-qtgraphicaleffects \
+    qt5-qtquickcontrols2 \
+    qt5-qtsvg \
+    kwallet \
+    pam-kwallet
 
 # Use a COPR Example:
 #
@@ -106,3 +112,6 @@ dnf5 -y copr disable wezfurlong/wezterm-nightly
 systemctl enable podman.socket
 systemctl disable gdm
 systemctl enable sddm
+
+# Run SDDM theming script
+/ctx/scripts/setsddmtheming.sh
