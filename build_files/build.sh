@@ -123,6 +123,8 @@ dnf5 -y copr disable erikreider/SwayNotificationCenter
 dnf5 -y copr disable pgdev/ghostty
 dnf5 -y copr disable wezfurlong/wezterm-nightly
 
+dnf clean all
+
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
