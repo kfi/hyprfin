@@ -23,33 +23,6 @@ dnf5 copr -y enable pgdev/ghostty
 dnf5 copr -y enable wezfurlong/wezterm-nightly
 dnf5 copr -y enable tofik/nwg-shell
 
-cat <<EOF > /etc/yum.repos.d/google-chrome.repo
-[google-chrome]
-name=google-chrome
-baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
-enabled=1
-gpgcheck=1
-gpgkey=https://dl.google.com/linux/linux_signing_key.pub
-EOF
-
-### /opt directory fix
-
-OPTFIX_PKGS="google-chrome-stable"
-
-echo "Creating symlinks to fix packages that install to /opt"
-# Create symlink for /opt to /var/opt since it is not created in the image yet
-mkdir -p "/var/opt"
-ln -s "/var/opt"  "/opt"
-# Create symlinks for each directory specified in recipe.yml
-for OPTPKG in "${OPTFIX_PKGS[@]}"; do
-    OPTPKG="${OPTPKG%\"}"
-    OPTPKG="${OPTPKG#\"}"
-    OPTPKG=$(printf "$OPTPKG")
-    mkdir -p "/usr/lib/opt/${OPTPKG}"
-    ln -s "../../usr/lib/opt/${OPTPKG}" "/var/opt/${OPTPKG}"
-    echo "Created symlinks for ${OPTPKG}"
-done
-
 ### Install packages
 
 # Packages can be installed from any enabled yum repo on the image.
@@ -120,8 +93,22 @@ dnf5 install -y --setopt=install_weak_deps=False \
     qt5-qtsvg \
     kwallet \
     pam-kwallet \
-    thunar \
-    google-chrome-stable
+    thunar
+
+### Install Google Chrome - Workaround
+
+mv /opt{,.bak}
+mkdir /opt
+dnf install -y --enablerepo="google-chrome" google-chrome-stable
+mv /opt/google/chrome /usr/lib/google-chrome
+ln -sf /usr/lib/google-chrome/google-chrome /usr/bin/google-chrome-stable
+mkdir -p usr/share/icons/hicolor/{16x16/apps,24x24/apps,32x32/apps,48x48/apps,64x64/apps,128x128/apps,256x256/apps}
+for i in "16" "24" "32" "48" "64" "128" "256"; do
+    ln -sf /usr/lib/google-chrome/product_logo_$i.png /usr/share/icons/hicolor/${i}x${i}/apps/google-chrome.png
+done
+rm -rf /etc/cron.daily
+rmdir /opt/{google,}
+mv /opt{.bak,}
 
 # Use a COPR Example:
 #
@@ -135,7 +122,6 @@ dnf5 -y copr disable solopasha/hyprland
 dnf5 -y copr disable erikreider/SwayNotificationCenter
 dnf5 -y copr disable pgdev/ghostty
 dnf5 -y copr disable wezfurlong/wezterm-nightly
-rm -f /etc/yum.repos.d/google-chrome.repo
 
 #### Example for enabling a System Unit File
 
