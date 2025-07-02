@@ -32,6 +32,24 @@ gpgcheck=1
 gpgkey=https://dl.google.com/linux/linux_signing_key.pub
 EOF
 
+### /opt directory fix
+
+OPTFIX_PKGS="google-chrome-stable"
+
+echo "Creating symlinks to fix packages that install to /opt"
+# Create symlink for /opt to /var/opt since it is not created in the image yet
+mkdir -p "/var/opt"
+ln -s "/var/opt"  "/opt"
+# Create symlinks for each directory specified in recipe.yml
+for OPTPKG in "${OPTFIX_PKGS[@]}"; do
+    OPTPKG="${OPTPKG%\"}"
+    OPTPKG="${OPTPKG#\"}"
+    OPTPKG=$(printf "$OPTPKG")
+    mkdir -p "/usr/lib/opt/${OPTPKG}"
+    ln -s "../../usr/lib/opt/${OPTPKG}" "/var/opt/${OPTPKG}"
+    echo "Created symlinks for ${OPTPKG}"
+done
+
 ### Install packages
 
 # Packages can be installed from any enabled yum repo on the image.
