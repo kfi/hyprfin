@@ -23,6 +23,15 @@ dnf5 copr -y enable pgdev/ghostty
 dnf5 copr -y enable wezfurlong/wezterm-nightly
 dnf5 copr -y enable tofik/nwg-shell
 
+cat <<EOF > /etc/yum.repos.d/google-chrome.repo
+[google-chrome]
+name=google-chrome
+baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+enabled=1
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+EOF
+
 ### Install packages
 
 # Packages can be installed from any enabled yum repo on the image.
@@ -93,7 +102,8 @@ dnf5 install -y --setopt=install_weak_deps=False \
     qt5-qtsvg \
     kwallet \
     pam-kwallet \
-    thunar
+    thunar \
+    google-chrome-stable
 
 # Use a COPR Example:
 #
@@ -107,6 +117,7 @@ dnf5 -y copr disable solopasha/hyprland
 dnf5 -y copr disable erikreider/SwayNotificationCenter
 dnf5 -y copr disable pgdev/ghostty
 dnf5 -y copr disable wezfurlong/wezterm-nightly
+rm -f /etc/yum.repos.d/google-chrome.repo
 
 #### Example for enabling a System Unit File
 
